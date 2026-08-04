@@ -1,0 +1,388 @@
+ahhoz, hogy bármit készíteni tudjak godottal nodeokat használunk
+ha enemyt akarunk, node
+ha menüt --> node
+ha jatekos karaktereket --> node
+ezek a nodeok az alapvető építőkockái a játékoknak
+több fajtájuk van, sprite-ok, hangok, fizika
+ki is terjeszthetjük vagy továbbfejleszthetjük őket, hogy jobbak legyenek
+ahhoz, hogy godotban játékot fejlesszünk ezeket kell összekombinálni, hogy megkapjuk a játékot amit akarunk
+
+ha mindent egy helyre akarnék tenni az könnyen menedzselhetetlen lenne és összezavaró egy idő után
+ehelyett sceneket használunk
+a scenek lehetővé teszik nekünk, hogy a nodekoat egy helyre tegyük és menedzselhető csomagok legyenek belőlük
+a scene lehet karakter, menü, fegyver, lehet kicsi pl egy coin amit fel lehet venni, vagy egy komplett szint is lehet, lehetővé teszik nekünk, hogy a játékot darabokra bontva fejlesszük, majd később tegyük össze, mivel arra is van lehetőségünk, hogy sceneket egymásba tegyünk ezt nestingnek hívjuk
+
+pl van egy player scenem, platform, és coin ezt pl behelyezhetjük egy level 1 scenebe
+mivel ezek a scenek újra felhasználhatók egyszer kell megcsináljam és a játékon belül bárhol használhatom
+
+pl ugyan azt a coin scenet használhatom a level1 és level2 sceneben is ugye
+ha módosítom egy helyen mindenhol módosulni fog 
+
+minden nodeom és scenem egy "fa" szerű strukturát kap, ennek scene tree a neve
+a node amiben minden benne van ennek a neve root
+
+a godotnak meg kell mondani melyik scenet akarom main-nek  futtatni
+hozzáadjuk a nodeot de nem látjuk mert grafikát kell neki adni
+
+player movement/fizika alapok
+
+miután megvan melyik node kell jobb oldalt a sávban tudom állitgatni a tulajdonságait az adott nodenak
+animated sprite 2d-nek animated sprite framet tudok megadni
+azert jó ha vannak assetjeim, mert konkrétan nekem kéne megcsinálnom mindent képkockáról képkockára
+így használhatom a készeket, egyszerűbb módosítani őket
+alapvetően a karakterem blury mivel pixel arttal dolgozom és éles edgek kellenek
+alapéretelmezetten a godot próbálja felélesíteni de pixeleknél ez nem így van
+project/project settings/textures/default texture filter nearest ez a beállítás kiszépíti a pixel artomat
+fizikai nodeoknál pl a characterbody2d ezeknek fizika kell amivel az engine dolgozni tud, ha nincs ilyen megadva akkor figyelmeztet a godot 
+collisionoknek hivjuk oket ezek a fizika, nem kell pontosnak lenniük vagyis ritkán érdemes kissebre rakni őket mint a tárgy mivel játék közben ha túl nagyok zavaróak lehetnek
+miután kész a player kell egy kamera, hogy tudjuk irányítani mit szeretnénk látni
+erre a camera2d tökéletes, F betű lenyomása után látom a camera viewportot
+alapvetően túl nagy a zoomot lehet állítani pl 4*4
+
+most van egy futó emberkénk, ahhoz, hogy mozogjon scriptet kell írni neki a player scene-ben tudok hozzáadni
+van beépített default movement script nyilván később tudok hozzáadni customot is eleinte ez túl sok lehet
+ez hozzáad egy alap scriptet de a játékosunk leesik ha elindítjuk, mivel nincs neki collidere amin állhat ezért esik ki a képből
+a játékosunknak van collidere de nincs amin állhat
+worldbounary shape tökéletes ilyen világ határok megadására, mivel a horizontális tengelyt kitölti
+tudom forgatni akkor vertikálisan tölti ki
+a lényeg, hogy ez a fizika a static body 2d-vel jól működik static bodyt akkor használok ha nem akarom, hogy valami mozogjon, pl talajnak tökéletes
+ez a beépített movement pedig nyilak/space ugrást lehetővé teszik, könnyen módosítható
+viszont mivel világot akarok ezért ennek is scenet kell majd csinálni úgyhogy szépen kitörlöm
+
+World building 1.0
+világépítéshez a demo kis colliderünket le kell venni
+a legelterjedtebb világépítés az az ha tileokat használunk
+más szavakkal, különböző tileokat rajzolunk egy gridbe, így több szintet is tudunk csinálni néhány tileal, tileMap erre egy jó eszköz, ahogy a játékosunk is előre megépített image-ből jön ezt tilesetnek hívjuk, a tilemepre építjük a tilesetből szedett kis tilejainkat, hogy világot építsünk
+
+alul megjelenik egy ablak itt tudjuk behúzni a tilesetünket
+automatikusan felismeri a godot ezeket, ezeket
+
+itt a kis ceruza ikonnal a tilemapre rajzolgatva tetszőleges világot alakíthatok ki, ha egy blokkot jelölök ki azt blokként mozgathatom
+
+előbb a világot építsd meg utána a dekorációt így érdemes
+ha kész van leesik a karakter mert fizikát kell adni a tilejainknak xd
+property anlak jobb oldalon, pysics layers -> add element
+igy átdob minket a tilesetre és ki kelltaláljuk melyik tilejaink tartoznak a phisycs layerhez
+amelyik tileoknak csak részleges fizikát akarok ki lehet választani őket szépen méretre szabni
+összetettebb tárgyaknál adhatok meg fizika pontokat is 
+
+mostmár collideolunk de a playerünk kimegy a képből, ha a kamerát behúzom a playerbe őt fogja követni
+player nodenál figyelni kell, hogy ne node2d-be csináljam hanem direktbe a characterbody2d-be a kamera csak úgy fog működni
+
+platforms
+valamelyik mozog valamelyik nem, bármikor MIKOR új modult csinálunk  játékhoz új scenet csinálunk neki
+animatablebody2d mikor mozgatni akarok valamit és, hogy collideoljon a többi dologgal az útjában
+
+ennek is kell grafika sprite2d-vel be tudom húzni a kész textúrámat a sprites mappából
+mivel ez egy kép több blokkból, jobb oldalt properties ablak, region, edit reagion ez bedobja a region editort és itt testre tudom szabni a dolgokat
+
+snap mode, pixel snap/illesztés így tudok vagdosni
+kell ennek is collisionshape2d a fizika miatt, méretre szabom elmentem és kész is
+jelenleg nem tudok alulról ráugrani, ennek küszöbölésére egyirányú platformmá alakítjuk
+platform scene --> one way collisiont bekapcsolom és kész is
+
+viszont  a player a platform mogött lesz, ezt a node tree-ben is meg tudom oldani ha a platformot a player alá teszem de van erre jobb megoldás is, a player z-indexének állítása, pl 5-re így a player folyton elöl lesz
+
+ahhoz, hogy csak egy x platformot mozgassak kiválasztom a platformot és egy animationplayer nodeot adok hozzá
+
+animatin-re kattintva létrehozok egy újat majd a transform propertinél keyframe kiindulópontnál a kis kulcsra kattintok alul a másodpercet görgetem majd ha végig ért a platform rögzítem a második keyframet is, odaviszem a kék vonalat a másodperc csúszkán ahova akarom majd mozgatom a platformot shitftel hogy egyenes legyen, majd ha odavittem a platformot ahova akarom mégegy keyframet hozzáadok
+
+ha lejátszom ezt a mozgatást lejátszódik wooow
+a másodperc mutató mellett kis ikonra kattintva 2 opcióm van loopolom az animációt vagy ismételtetem oda vissza most oda vissza mozgás kell szóval ismételtetjük, ha túl gyors a másodpercet módosíthatom majd autoplayre állítom és kész is
+
+pick ups
+area2d új scene, ezt akkor használjuk ha nem akarunk collideolni hanem csak érzékelni szeretnénk ha valamivel collideolunk pl coin gyűjtögetés, érzékeli ha egy másik test belemegy pl a player
+most coinhoz animatedspritesheetet használunk, spriteframes a resource alsó ablakban a kis rácsos ikonra kattintva 
+
+behúzzuk a gamebe vannak coinok de nem történik semmiii
+létrehozunk neki egy scriptet
+
+defaulton 2 függvényünk van ready és process
+a ready akkor fut le mikor a nodeunk belép a scene tree-be
+a játék eleje, 
+most nem akarjuk, hogy bármi történjen ezért kitöröljük, azt akarjuk, hogy akkor történjen valami ha a player belép a coin területére
+
+signal-ok erre vannak, ezek lehetővé teszik, hogy triggereljük a kódot a játékunk történései alapján
+a godotban számos előre beépített signalunk van
+kiválasztjuk a nodeot jobb felül jelek/node menüpont és itt vannak a signaljaink
+dupla klikk a signalra ami nekünk kell majd csatlakoztatás, ez létrehoz egy függvényt egy kis söld nyíl jelzi, hogy ez signalra fut majd le
+ha most belemegyünk a coinba akkor kiírja a konzol, jogy +1 coin viszont ez a signal bármikor lefut amikor valami belemegy a coin arénájába
+
+ennek küszöbölésére 2 módszer van, vagy kóddal ellenőrzöm mikor mi megy bele vagy a playert egy külön fizikai rétegre helyezem a többi tárgytól a coinnal együtt, ha egy fizikai rétegen vannak a többi dolog nem fog érintkezni velük, egyelőre nem akarom ezt szóval be kell állítsam, hogy csak a level 2-ről érzékel collideokat
+
+a mask tulajdonság ezt csinálja, ha beállítom a coinra, hogy mask2 akkor a második fizikai layerről fogja érzékelni a collisiont
+
+mostmér ahelyett, hogy printeljuk a +1 coint levesszük a képernyőről ha felvettük
+queue_free() függvény leszedi az adott sceent amibe belementünk de unblock ezt csinálja, eltünteti a dolgot 
+
+dying 1.0
+most boldogan éldegélünk a világunkban addig amíg le nem esünka pályáról
+ilyenkor semmi sem történik jelenleg, 
+az első dolog, hogy a kamerát limitáljuk, be kell állítani, hogy ne kövesse a játékost ha leesünk
+
+kiválasztjuk a kamerát, limit property, a vonalzóval tökéletesen meg tudom mondani mennyi az a távolság amire még követnie kell a játékost a piros vonaltól számoljuk lefelé, jpbbra balra felfelé
+
+smoothingot beállítom, viszont mostmár ha leesünk a kamera fent marad a player pedig eltűnik
+
+csinálnunk kell egy kill zonet, vagyis detektálnunk kell ha a játékos egy veszélyes zónába került és újraindítani a játékot
+
+van egy módszer ami lehetővé teszi, hogy ugyan azt a kill zone-t többszö is felhasználjuk pl enemyknél, csapdáknál ilyenek
+
+
+scenet csinálunk neki, area2d-vel mivel érzékelni akarjuk mikor beléptünk ebbe a zónába, collision mask2 mivel a második layeren mozog a player
+
+nem adunk shapet neki, mert mindenféle eleme akarjuk használni nem csak a leesésre
+ahol használjuk ott adunk neki collisionshapet de mivel ugyan az fog történni csapdáknál és leesésnél ezért egy scene
+
+a killzone nodenál scriptet adunk hozzá most empty script, scripts mappa
+hozzárakunk egy signalt
+
+most nem akarjuk azonnal újraindítani a játékot ezért a timer nodeot használjuk
+ezt a nodeot most be akarjuk implementálni a kódunkba ehhez egy referencia kell 
+
+behúzzuk a kódba és ctrl billentyűvel elengedjük csinál nekünk egy változót és egy hivatkozást a node-ra amit behúzunk
+
+timer.start() elindítja a timert eseményt triggerelni pedig ugyan úgy van rá signal, kiválasztom a timert --> jelek
+
+timeout esemény
+itt fog meghalni az ember és újraindul a játék
+get_tree().reload_current_scene() ez a sor újratölt minden scenet miután meghaltunk
+
+worldbuilding 2.0
+kategorizálni tudjuk a nodejainkat mivel  nagyobb projektnél már muszáj, base node-ba lehet rakni al dolgokat
+pl a coinokat ha van 5 db berakhatom egy sima node node alá
+backgroundhoz plussz egy szint kell a tilemapez layer propertynél tudok layereket definiálni majd hátteret festeni
+
+Enemy
+node2d alapértelmezetten mivel semmivel sem kell collideolnia
+
+3 státusza van az enemynek idle
+mikor sebződik és mikor felkel először az idlet csináljuk meg
+
+mivel megoldottuk a killzonet ezért itt is használhatjuk mint külső node ugyan úgy fog működni csak be kell ide húzni
+
+adunk neki egy collidert és kész is az area of danger mint a leesésénél ugyan azzal a killzone-al
+most mozgassuk az enemyt oda vissza
+ugyan úgy mint a platformmal csináltuk
+
+viszont most nem animálunk hanem egy scriptet írunk ami oda vissza fogja forgatni az enemyt a falak között
+
+mint a filmekben a játékok is úgy ábrázolnak valami mozgást, hogy frameket rajzolnak és gyorsan mutatják őket
+amíg a filmek fix arányban mutatják a frameket a játékok annyit próbálnak mutatni amennyi lehetséges, hogy simább legyen az eredmény (kép) nyilván függ a géptől amin fut, mi történik a játékban de általánosságban elmondható, hogy min 60fps kéne gyakran több
+
+mielőtt a gép egy új framet tudna rajzolni először frissítenie kell a játék állapotát, mi történt az utolsó frame óta?
+ezt minden node-al megcsinálja majd kirajzolja a következő framet
+ezt hívjuk game loopnak, ez mindig megtörténik újra és újra, a godot ezt atomatikusan csinálja, 
+de adhatunk funkciót a gameloophoz _process() default függvénybe írva
+
+_ready() egyszer fut le a process() pedig minden egyes framenél lefut ez tökéletes pl enemy mozgatására, az enemy pozícióját fogja mozgatni minden frameben
+
+position.x += 1 minden framenél ezzel a trükkel tudom mozgatni 
+de most jelenleg az enemy szépen elrepül 
+
+mivel fix értékkel növeljük az értéket az enemy néha gyorssabban mozog mint kéne ami nem jó
+hogy ezt megoldjuk a delta paramétert fogjuk használni
+a delta az egy olyan property ami megmondja mennyi idő telt el a legutóbbi frame óta, ha sok framet rajzolunk másodpercenként a delta kicsi lesz
+
+ha nem tudunk annyit rajzolni a delta nagyobb lesz, ezt használva kiküszöbölhjetjük a fenti problémát, ha nagy framerateünk van többször mozog kicsit az enemy ha kicsi a framerate akkor kevesebbszer többet
+
+movement*delta ezzel a trükkel a mozgás frameratetől független lesz, a lényeg, ha van egy speed valuem pl itt az 1 akkor megszorzom deltával 
+
+position.x += direction * SPEED * delta ez egy standard megközelítése a movementnek
+mostmár csak meg kell néznünk, hogy az enemy mikor kerül közel egy falhoz
+ehhez a raycast 2d-t használjuk, ez lényegében ilyen kis rayeket "lő ki" melyekkel detektálhatjuk az ütközéseket (collisionöket)
+
+
+if ray_cast_right.is_colliding():
+		direction = -1
+	if ray_cast_left.is_colliding():
+		direction = 1
+	position.x += direction * SPEED * delta
+
+így már pingpongozik az enemy oda vissza a falak között script által
+
+egy dolog maradt kicserélni az enemy spriteot ha irányt változtat
+ehhez az animatedsprite2D offset flipH tulajdonságát fogjuk használni
+
+func _process(delta: float) -> void:
+	if ray_cast_right.is_colliding():
+		direction = -1
+		animated_sprite.flip_h = true
+	if ray_cast_left.is_colliding():
+		direction = 1
+		animated_sprite.flip_h = false
+	position.x += direction * SPEED * delta
+
+így mostmár forog az enemy
+
+dying 2.0 
+
+adjunk hozzá egy slow motion effektet ha meghaltunk
+ezt úgy tudjuk megoldani hogy a játék time scalejét módosítjuk
+Engine.time_scale = 0.5 ezt így tudjuk megoldani
+nyilván miután meghaltunk visszaállítjuk 1.0 default értékre
+
+ha levesszük a player colliderét a mapről ugye ki fog esni csináljuk ezt is meg
+
+func _on_body_entered(body: Node2D) -> void:
+	print("you died!")
+	Engine.time_scale = 0.5
+	timer.start()
+
+itt a body rész az a body aki belépett az areába (killzone scriptje)
+body.get_node("CollisionShape2D").queue_free()
+mivel csak a player megy bele a killzoneba így tudom kiszedni a collisionshapejét ami ugye fizikailag hozzákapcsolja a maphez, ha ez nincs akkor leesik mint az elején lassítva egy ilyen smooth halált látunk
+
+player 2.0
+hogy a player animációt kapjon módosítanunk kell a player movement default scriptjét
+ugyan így a keybindingot is
+
+a physics process nagyon hasonló a process függvényhez 
+viszont a process hiába jó sok dologra van egy része a játéknak aminek nem túl jó ha nem tudja hányszor fut le másodpercenként ez a fizikai motor ennek a motornak fix intervallumonként kell működjön, hogy elkerüljük a fura viselkedését a játéknak ezért találták ki a physics_processt mivel fix intervallumonként fut le 60/s defaulton ez független a framerateünktől és segít benne, hogy a játék simán fusson, arra jó, hogy mozgassunk valamit aminek érintkeznie kell a környezetével mint pl egy player character
+
+# Add the gravity.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
+	# Handle jump.
+	if Input.is_action_just_pressed("ui_accept") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+	# Get the input direction and handle the movement/deceleration.
+	# As good practice, you should replace UI actions with custom gameplay actions.
+	var direction := Input.get_axis("ui_left", "ui_right")
+	if direction:
+		velocity.x = direction * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+
+itt több dolog történik, ha a player nem talajon áll gravitációt adunk hozzá, ha negbyomjuk a spacet és a játékos a talajon áll ugrunk, és attól függően melyik nyilat nyomjuk meg irányt változtatunk
+
+kezdjük azzal, hogy rebindulunk néhány input keyt, ehhez a godot action systemet használ
+akkor használjuk ha bármit akarunk a játékban, pl ugrani, jobbra vagy balra menni ezek az actiönök
+
+utána ezekhez az actiönökhöz billentyűket rendelhetünk, 
+project, project settings --> input map
+itt vehetünk fel actiönöket és köthetjük hozzá a billentyűinket
+egy actiönhöz több billentyűt is köthetünk
+
+ha ez negvan ezeket az actiönöket használhatjuk a scriptünkben
+
+a következő hogy frissítjük a grafikát ha mozgunk abba az irányba ahova mozgunk
+és az animációt az action szerint
+
+func _physics_process(delta: float) -> void:
+	# Add the gravity.
+	if not is_on_floor():
+		velocity += get_gravity() * delta
+
+	# Handle jump.
+	if Input.is_action_just_pressed("jump") and is_on_floor():
+		velocity.y = JUMP_VELOCITY
+
+	# Get the input direction: -1, 0, 1
+	var direction := Input.get_axis("move_left", "move_right")
+	
+	#flip the the sprite
+	if direction > 0:
+		animated_sprite.flip_h = false
+	elif direction < 0:
+		animated_sprite.flip_h = true
+	
+	#applies movement
+	if direction:
+		velocity.x = direction * SPEED
+	else:
+		velocity.x = move_toward(velocity.x, 0, SPEED)
+
+	move_and_slide()
+
+így a karakterünk mostmár forog
+adjunk hozzá néhány animációt
+
+miután hozzáadtunk a player animated spritejában az animációkat 
+if direction == 0:
+		animated_sprite.play("idle")
+	else:
+		animated_sprite.play("run")
+ezt beillesztve a physics process függvénybe indíthatom az animációkat
+ugráshoz egybeépített függvényt használjuk, hogy megnézzünk a padlón vagyunk -e
+is_on_floor() erre van
+
+if is_on_floor():
+		if direction == 0:
+			animated_sprite.play("idle")
+		else:
+			animated_sprite.play("run")
+	else:
+		animated_sprite.play("jump")
+
+így pedig már ugrik is a lovag
+
+Szöveg
+ez fontos hogy sztorit közöljünk 
+lehet a játék felett is de a szöveget a játék világába is illeszthetjük
+godotban egy text nodeot labelnek hívunk
+
+mivel pixel art ez is blury lesz, 
+pixelated alap hard edges hogy matcheljen a stílussal, ehhez is lehet custom fontot hasznélni, 
+label propertyk között -->theme overrides --> fonts -> itt lehet állítgatni
+
+score and points
+ahhoz, hogy ezt megoldjuk 2 dolog kell, 1 script ami figyeli az aktuális pontunkat és egy label ami megjeleníti
+
+ilyen globális változókat egy game Managerbe szoktak tenni, üres Node mivel nem kell neki semmi position, rotation, scale szóval nem node 2d hanem sima node
+
+saját függvénynek pl pontszámlálónak kell valami ami meghívja
+
+ahhoz, hogy működjön átmegyünk a coin scriptbe és meghívjuk mikor egy coint felvettek
+ehhez a coin scriptben kell egy referencia a game_manager node-ra
+
+mivel game Managerből 1 darab van megjelölhetem egyediként, jobb klikk a node-ra mark as unique ez csinál egy százalék jelet nneki a cél, hogy elkerüljük $"../../GameManager" ezt a hivatkozást
+
+unique nodeokhoz csak azonos sceneből férhetünk hozzá
+
+
+audio
+gyakran efelett elsiklik a figyelem mikor játékot cisnálnak, de ezek nagy szerepet játszanak
+audiostreamplayer2d node ezek lejátszására van
+
+autoplay tulajdonság bekapcsol akkor háttérzene effektus jön
+automatikusan nem loopol, dupla katt a zenére és rakjuk be hogy loop enable
+
+alul audio alatt tudok hangeffekt hangerősséget is konfigurálni
+buszokat tudok hozzáadni a hangerőhöz, ha kész vagyok itt tudom állítani a hangerőt
+jelenleg mindig újraindul a zene ha meghalunk, ennek küszöbölésére scenné alakítjuk a music nodeot és autoloadá állítjuk, ezek globális scriptek amiket azt akarom, hogy fennálljanak az egész játék alatt
+nem számítva azt, hogy melyik scenek vannak jelenleg betöltve 
+
+ehhez kiszedjük a Musicot a gamesceneből helyette 
+project -> project settings -> autoload
+
+coinhoz is hozzáadjuk az audiostreamplayer2d-t
+
+ugye itt eltűnik a coin ha felveszem elindíthatnám kódból is a hangot de ha késleltetem az eltüntetést többször játszódna le a hang amíg a pénzben állok, van erre egy kód nélküli megoldás
+animationplayer
+
+ugye itt ha felveszem a coint el akarom tüntetni, ez a visible tulajdonság ha erre rakok egy keyframet amíg látható majd egyet mikor nem ez megoldja viszont defaultra a godot automatikusan létrehoz egy reset animációt is ami visszaállít mindent alapértelmezettre
+
+a collisionshapet is modosítjuk mivel nem akarunk collideolni vele amíg lejátsszuk a hangot
+
+1 másodperc után el akarjuk tüntetni a coint, ehhez a godotnak van beépített eszköze tudok függvényeket rakni az animációkhoz
+
+add track --> method track -> itt ki tudom álasztani melyik függvényt akarom az animáció részének
+
+export
+több platformra tudok exportálni de most Windows build jön
+ehhez export toolok kellenek defaulton nincsenek letöltve szóval le kell szedni
+
+project--> export
+kiválasztom a Windowst 
+embeed pck ez egy fájlt cisnál belőle
+product name a játék neve
+
+expand level
+effectek
+zenék
+spikes
+ilyenek
+lehet fejleszteni

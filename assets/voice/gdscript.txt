@@ -1,0 +1,702 @@
+GDSCRIPT
+A gdscript egy magas szintű objektumorientált, imperatív programnyelv aminek a szintaxisa olyasmi mint a Python de ezt godotra készítették
+
+HELLO WORLD!
+ahhoz ugye hogy bármit is lássunk készítünk egy test scenet pl egy node-ot lerakunk
+_ready() függvény defaulton ugye akkor fut le mikor egy node belép a scene treebe
+szóval ide bármit írhatunk amit azonnal akarunk, hogy történjen
+print() kiírás
+
+
+SYNTAX
+nem kell pontosvessző, nincsenek bracketek, tabokkal van megoldva a kódunk tagolása mint Pythonban
+a nyelv case sensitive
+
+MODIFYING NODES 1.0
+ahhoz, hogy pl egy nodeot módosítsunk scriptből kell egy referencia a node-ra és a property amit módosítani akarunk
+
+ha jobb oldalt ráhoverelünk a propertyre amit manuálisan is tudok állytani a toolbarban kiírja a scriptes property nevet
+
+a node treeből baloldalról behúzhatjuk simán a kódba az elemet majd módosítom
+$Label.modulate = Color.GREEN
+így pl színt tudok állítani
+
+INPUT
+mondjuk hogy a labelünket pirosra akarjuk állítani ha megnyomjuk a spacet
+hogy ez működjön először egy input action kell
+project->project settings-> input map
+actiönök lehetővé teszik nekünk, hogy billentyűket kössünk dolgokhoz amiket azt akarunk, hogy megtörténjenek
+pl itt az action a piros szöveg lesz gombnyomásra
+common actiönök pl, move, shoot jump ilyenek
++ gomb az ablakban felhoz egy másik ablakot ami inputra figyel ha megnyomtuk hozzáköti a billentyűt az actiönhoz
+
+func _input(event: InputEvent) -> void:
+	pass
+
+mint a ready ez is egy beépített függvény godotban
+viszont ez akkor fut le ha a játék bármilyen inputot érzékel
+az eventben van benne az, hogy mi triggerelte a függvény lefutását egérmozgás vagy billentyű
+if event.is_action_pressed("my_action"):
+		$Label.modulate = Color.RED
+	if event.is_action_released("my_action"):
+		$Label.modulate = Color.GREEN
+így tudom megnézni, hogy a trigger az én eseményem volt-e
+ez a kód annyit csinál ha nyomom a spacet akkor piros lesz a szöveg ha releaselem akkor zöldre visszavált 
+
+fontos, hogy több módon is kezelhetjük az inputokat de most gdscriptet tanulunk
+
+VARIABLES 1.0
+ezek ilyen konténerek amik információt tárolnak
+pl ha van egy player lehet name, Health, is_alive
+ezek pl változók lehetnek
+
+var kulcsszóval lehet létrehozni
+	health = 40 #értékadás
+	health = 20 + 30 # kalkulció eredményét rendelem hozzá
+	health += 20 # összeadás
+	health -= 10 # kivonás
+	health *= 4 # szorzás
+	health /= 2 # osztás
+
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("my_action"):
+		health -= 20
+		print(health)
+a korábban létrehozott actiön ha megnyomom a spacet csökken az életerő
+egy példa szintén beépített _input function használata
+
+IF STATEMENTS
+az if-ek a kódunk logikájának a ragasztói lényegében
+eddig is használtuk már, hogy megnézzük lenyomtuk-e a spacet
+
+ez lényegében annyi, hogy van egy feltétel ha ez teljesül akkor a kód ami benne van lefut
+	if event.is_action_pressed("my_action"):
+		health -= 20
+		print(health)
+		if health <= 0:
+			health = 0
+			print("You DIED!")
+példa
+comparisons
+x == y egyenlő
+x > y nagyobb mint
+x >= y nagyobb vagy egyenlő
+x != y nem egyenlő
+x < y kisebb mint
+x <= y kisebb vagy egyenlő
+
+and kulcszóval tudok ifbe 2 feltételt rakni ha azt akarom, hogy akkor fusson le ha 2 feltételnek kell
+teljesülnie hogy a kód lefusson
+or kulcsszó pedig ha csak az egyiknek ha 2 feltétel van de elég az egyiknek teljesülnie
+
+
+az ifekben jó az is, hogy nem csak azt adhatom meg mi legyen ha a feltétel igaz hanem azt is mi legyem ha nem igaz
+
+példa:
+		if health <= 0:
+			health = 0
+			print("You DIED!")
+		elif health < 50:
+			print("YOU ARE INJURED!")
+		else:
+			print("YOU ARE HEALTHY.")
+
+COMMENTS
+ezeket arra használjuk, hogy emlékezzünk mit miért csináltunk a kódunkban
+#this is a comment
+ezt a sor felé, mellé is írhatjuk #this is a comment
+ilyen formában
+ctrl+k betű kombója egy tartományt tesz kommentbe ugyan ez ha ki akarok venni valamit
+
+VARIABLES 2.0
+mikor változót csinálunk meg kell fontolnunk hol tesszük
+ha egy ifben csináljuk azt csak az ifben használhatjuk
+ezt scope-nak hívjuk itt a kezdők jellemzően hibázni szoktak
+
+ha egy változót több helyen akarunk használni legyünk biztosak benne, hogy a kód tetejére kerül
+alapvetően dinamikus típusú változók vannak a nyelvben, de nyilván figyelni kell mert lehet a játékunk különböző részei bizonyos típusokat várnak majd
+
+GDscriptben 4 féle adattípus van
+bool, int, float, string
+bool = true, false
+int = 2001
+float = 2,34
+string "Hello!"
+
+egy típust másikra alakítani kasztolásnak hívjuk (casting)
+var number = 42
+var test = "Meaning of life: " + str(number)
+ez a szintaxisa
+var pi = 3.14
+print(int(pi))
+ez így pl kerekíteni fog
+
+amik gyakoriak azok a Vector2 és Vector3
+a vector2 2 db floatot tárol x és y
+a vector3 3 db floatot tárol x, y és z
+ezek jellemzően pozíciókra használatosak
+var position = Vector3(3, -10, 5)
+position.x += 2
+print(position)
+így lehet módosítani
+szóval alapértelmezetten dinamikus típusokkal dolgozik a nyelv de lehetővé teszi nekünk, hogy statikus típusokat is megadhassunk
+ez nyilván preferencia kérdése melyiket használjuk
+
+var damage: int = 15
+ebben a formában lehet típust adni neki
+var damage := 15
+ebben a formában a godot határozza meg a típust inferred typing a neve és ilyenkor is statikus lesz a változó
+
+a godot felismeri, hogy a 15 egy egész szám
+@export var damage := 15
+ez lehetővé teszi nekünk, hogy az inspectorban (jobb oldalt a toolbarban) is használjuk a változót, módosítsuk (ha ott módosítjuk a játékunkban is módosul)
+
+const GRAVITY = -9.81 így kell konstanst csinálni
+
+Függvények
+Ezek a kenyér és a vaj a programozásban, lehetővé teszik, hogy a kódodat összefogd újrahasználható kis csomagokba
+
+a _ready() és _input() függvényekben az alulvonás arra van, hogy mutassa ezeket az engine hívja meg nem mi
+
+csinálhatunk sajátokat is elég gyakoriak a jump, dia, shoot, respawn például
+a függvények 2 félék lehetnek void ezek végrehajtanak valamit
+de jellemzően várnak valamit és visszaadnak valamit
+mint egy kávégép, beleöntöd a vizet, kávé dolgokat és kiadja a kész kávét ehát betöltötte funkcióját
+
+az inputokat a függvényekben paraméterkenek hívjuk, az output pedig a return
+
+pl ez egy olyan függvény ami 2 int paramétert vár és a visszatérési érték típusa is int
+func add(num1: int, num2: int) -> int:
+	var result = num1 + num2
+	return result
+
+var result = add(3, 5)
+print(result)
+
+Random számok
+randf() 0 és 1 között ad egy random számot, jó lehet ha pl lootot akarunk ritkább és kevésbé ritka arányban egy játékosnak
+var roll = randf()
+	if roll <= 8:
+		print("YOU found a common item.")
+	else: 
+		print("You found a rare item.")
+
+randirange 2 érték között fog random értéket adni pl egy random karakter magassághoz 
+var height = randi_range(140, 210)
+	print("Your character is: " +str(height)+ " cm tall.")
+
+randfrange igyan ez csak float
+
+Documentation
+a gdscript egész jól dokumentált, be van építve az editorba, ha lenyomva tartjuk a ctrl millentyűt és rákattintunk valamire amiről többet akarunk tudni akkor feldobja a hivatalos doksiban azt a részt
+
+
+tömbök/listák
+néha egy helyen akarok tárolni egy rakás dolgot ezekre vannak az arrayek pl intentory rendszer
+var items = ["Potion", 3, 6]
+a gdscriptnek nincs baja a több adattípusos tömbökkel de le lehet korlátozni
+var items: Array[String] = ["Potion", 3, 6]
+
+hozzáférni ezekhez egyszerű, mikor felveszel egy elemet beléjük akkor automatikusan kapnak egy számot ami a pozícióját jelzi az adott elemnek egy tömbön belül
+0-tól számol
+print(items[0])
+items[1] = "Smelly sock" érték módosítás
+
+items.remove_at(1) ez kitörli a második elemét
+items.append("Overpowered sword") ezzel új elemet tudok hozzáadni
+
+Loops:
+mivel a tömbök könnyen hosszúra nyúlhatnak kézzel menedzselhetetlenné válnak ezért most a ciklusok következnek amik lehetővé teszik nekünk, hogy ismételjünk dolgokat, ismételjünk dolgokat, ismételjünk dolgokat, ismételjünk dolgokat, ismételjünk dolgokat
+
+for item in items:
+		print(item)
+
+for ciklus szintaxis, ez lépésszámlálós ciklus, vagyis ha végig akarunk járni egy listát pl tök jó
+for item in items:
+		if item.length() > 6:
+			print(item)
+fix intervallum n az aktuális iteráció
+for n in 8:
+		print(n)
+
+while loop addig megy amíg egy bizonyos feltétel érvényben van
+var glass := 0.0
+	while glass < 0.5:
+		glass += randf_range(0.01, 0.2)
+		print(glass)
+	print("The glass is now half full!")
+
+pl víz betöltése egy pohárba szimuláció amíg félig nem lesz, random értékekkel
+
+while loopoknál nagyon figyelni kell nehogy végtelen ciklust csináljak, ezek könnyen crashelhetik a programunkat, trükkös néha az elkerülésük pl ha kikommentelem azt a részt felül hogy a pohárba vizet töltök a pohár sose lesz félig tehát a ciklus örökre futni fog, ezek a végtelen ciklusok
+
+ciklusokhoz tartozó kulcsszavak 
+break: megszakítja a ciklust és a kódra ugrik ami a ciklus után van
+continue: skippel a loop következő iterációjára
+
+DICTIONARIES
+
+ezek eleinte nem tűnhetnek túl izgalmasnak de ritka hasznos dolgok
+a dictionaryk key value párokat tárolnak
+a való életben is használunk ilyeneket pl meg akarjuk nézni mit jelent a hideg szó
+ebben az esetben a kulcs a hideg az érték pedig az, hogy alacsony a hőmérséklet
+
+var my_dict = {}
+ilyen a szintaxisa
+pl a játékunkban több játékos játszik használhatjuk ezt, hogy nyomon kövessük őket
+
+var my_dict = {"Crook": 1, "Villain": 35, "Boss": 100}
+var players = {
+		"Crook": 1, 
+		"Villain": 35, 
+		"Boss": 100,
+		}
+	print(players["Villain"])
+
+func _ready() -> void:
+	var players = {
+		"Crook": 1, 
+		"Villain": 35, 
+		"Boss": 100,
+		}
+	print(players["Villain"])
+	players["Villain"] = 50
+	players["Dwayne"] = 999
+	
+	for username in players:
+		print(username + ": " + str(players[username]))
+ha for ciklussal bejárjuk itt a dictionary kulcsait járjuk be ebben a formában érünk el mindent
+a dictionary is data type független mint a lista de ami menőbb dictionaryben lehet dictionary és így tovább
+
+var players = {
+		"Crook": {"Level": 1, "Health": 80}, 
+		"Villain": {"Level": 35, "Health": 150}, 
+		"Boss": {"Level": 999, "Health": 500},
+	}
+	print(players["Boss"]["Health"])
+
+ebben a formában elkezdhetjük majd struktúrálni a játékunkat mint player stats, inventory, bossok és így tovább
+
+ENUMOK:
+az enumok jó megoldások lehetnek arra, hogy kategorizáljunk dolgokat a játékunkban
+mint amikor egy játékot írunk és több unit van, mint neutral, ally, enemy
+enum { ALLY, NEUTRAL, ENEMY }
+kód tetejére
+var unit_alignment = ALLY használat
+így egyszerű megnézni a kódunkban, hogy egy unit melyik alignmentben van
+
+enum Alignment { ALLY, NEUTRAL, ENEMY }
+
+var unit_alignment = Alignment.ALLY
+nevet is adhatunk nekik
+ez sokkal biztonságosabb mint inteket vagy stringeket adni valamilyen állapotra, mert a godot errort dob ha félreírunk egy ilyen statet
+
+@export var unit_alignment: Alignment
+így inspectorban be tudom állítani a unit alignmentet, ezért is jók az enumok
+
+a háttérben az történik, hogy a godot minden enum statere készít egy konstanst 
+szóval lényegében az enumok egy rakás konstans növekvő értékekkel
+print(Alignment.ENEMY) így a terminálon 2 fog megjelenni azért mert egyszerűen ez a 3. state
+ez ritkán fog kelleni vagyis számításba venni de jó, ha tudod mit csinál a kódod
+
+ha akarjuk felül is írhatjuk az eredeti értékeket
+enum Alignment { ALLY = 1, NEUTRAL = 0, ENEMY = -1 }
+
+MATCH 
+a Match a godot Switch statementje
+lehetővé teszi nekünk, hogy különböző kódokat futtassunk egy változózól függően
+
+match my_alignment:
+		Alignment.ALLY:
+			print("Hello, friend!")
+		Alignment.NEUTRAL:
+			print("I come in peace.")
+		Alignment.ENEMY:
+			print("TASTE MY WRATH!")
+		_:
+			print("Who are thou?")
+szintaxisa a _: a default érték ha semelyik nem matchel
+
+
+modifying nodes 2.0
+ha behúzzuk a nodeot a kódunkba alapból egy elérési utat dob be nekünk a godot viszont controlt letartva behúzva egy változó készül róla a kódban import lényegében
+
+@onready var weapon: Sprite2D = $Player/Weapon
+onready kulcszót használja mivel a godotnak elég szigorú szabálya van arra melyik node jött létre milyen sorrendben, mivel ha megnyitjuk a játékot és a weapon nodeot akarjuk elérni úgy, hogy nem jött még létre errort kapuk, az onready megvárja amíg minden létrejön szóval nem lesz ilyen hiba
+
+$-jel egy shorthand a get_node("Player/Weapon")-re
+az utvonal relatív
+
+weapon.get_path() így hozzáférek az útvonalhoz
+sok dologra jók az útvonalak de inflexibilisek, pl ha nevet változtatok ugye más lesz a path
+@export var my_node: Node így akár exportálhatom is és az inspectorban bármit hozzá tudok rendelni
+
+vagy click and draggel behúzhatom bármelyik nodeomat az exportáltba
+@export var my_node: Sprite2D
+így már csak sprite nodeokat tudok hozzárendelni a változómhoz
+
+a sprite2D a node2D-ből származik ezért a típusuk egyezik
+
+Signals
+ezek üzenetek melyeket a nodeok egymásnak küldözgetnek lényegében, arra használjuk, hogy megmondjuk egy bizonyos esemény bekövetkezett
+a lényeg, hogy bármilyen nodeot használok jobb felül az inspectorban a jelek részen láthatom milyen eseményei vannak az adott nodenak
+
+dupla klikk az eseményre csatlakoztatás és egy ilyen kis zöld ikon jelzi, hogy egy signal hozzá van fűzve a függvényhez
+ha rákattintok látom a sourceot ami a button
+func _on_button_pressed() -> void:
+	print("MONEY")
+ez a függvény annyit csinál, hogy ha a gombra kattintok kiírja a terminálra, hogy money
+ha a gombra kattintok bekövetkezik a pressed signal ez váltja ki a függvényt
+
+ami a jó dolog, hogy egy signalhoz bármennyi függvényt hozzákapcsolhatunk, mind meghívásra kerülnek ha emitelve van,
+
+ez azért jó mert lehetővé teszi nekünk, hogy úgy kapcsoljunk össze különböző nodeokat, hogy nem kell tudomást venniük egymásról, a gombnak pl fogalma sincs milyen függvények vannak hozzákapcsolva csak emiteli a signalt vagyis aktiválja
+a signalok tehát jók különböző részeket szeparálni a játékunkban (decoupling)
+
+képzeljünk el egy játékost aki szintet tud lépni ha elég xp-t szerez
+mikor szintet lépünk néhány játék funkciónak frissülnie kell
+ui, stats, unlocks pl achievmentek vagy spellek ilyenek
+
+mindent a playerből frissíteni hamar zavaros lehet
+ehelyett csinálunk egy leveled_up signalt amihez ezek a rendszerek kapcsolódni tudnak
+
+utána annyi a dolgunk, hogy a player node emitelje ezt a signalt ha szintet lépünk
+
+adjunk hozzá a mainhez egy timer nodeot, autostartra állítjuk
+1 másodperc után defaulton emiteli a timeout signalt
+
+var xp := 0
+
+func _on_timer_timeout() -> void:
+	xp += 5
+	print(xp)
+	if xp >= 20:
+		xp = 0
+20 xp-nél szintet lépünk másodpercenként 5 xp-t kapunk
+most csinálunk egy signalt amihez más nodeok kapcsolódni tudnak
+
+signal leveled_up
+ha beírom ezt a main.gd-be elmentem majd megnézem a Main node jeleit akkor látni fogom a leveled up signalt a listában 
+
+innen ugyan az mint bármelyik másik signal
+
+func _on_timer_timeout() -> void:
+	xp += 5
+	print(xp)
+	if xp >= 20:
+		xp = 0
+		leveled_up.emit()
+
+
+func _on_leveled_up() -> void:
+	print("DING!")
+
+signalt csatlakoztatni lehet kódból is
+func _ready() -> void:
+	leveled_up.connect(_on_leveled_up)
+
+disconnectel lehet disconnectelni is
+
+signalon keresztül paramétert is átadhatok, pl melyik szintet értük el
+signal leveled_up(msg)
+
+var xp := 0
+
+func _ready() -> void:
+	leveled_up.connect(_on_leveled_up)
+
+func _on_timer_timeout() -> void:
+	xp += 5
+	print(xp)
+	if xp >= 20:
+		xp = 0
+		leveled_up.emit("GZ!")
+
+
+func _on_leveled_up(msg) -> void:
+	print(msg)
+
+GET, SET, GOOOOOOOOOOO
+A getterek és setterek lehetővé teszik, hogy kódot futtassunk ha egy változó változott
+ez lehetővé teszi nekünk, hogy egy értéket egy bizonyos tartományon belül korlátozzunk
+
+vagy emitelni egy signalt, hogy a kódunk többi része meg tudja egy változó változott
+a példa amit erre mindig használunk az az élet (health) játékokban
+
+var health := 100:
+	set(value):
+		health = clamp(value, 0, 100)
+a clamp pl biztosítja, hogy az életerőnk sose megy 100 fölé vagy nem megy 0 alá
+csinálunk egy signalt a health_change eseménynek
+
+
+signal health_changed(new_health)
+
+var health := 100:
+	set(value):
+		health = clamp(value, 0, 100)
+		health_changed.emit(health)
+
+func _ready():
+	pass
+
+hozzákapcsoljuk a main nodehoz
+signal health_changed(new_health)
+
+var health := 100:
+	set(value):
+		health = clamp(value, 0, 100)
+		health_changed.emit(health)
+
+func _ready():
+	health = -150
+
+
+func _on_health_changed(new_health: Variant) -> void:
+	print(new_health)
+
+ez most pl 0-t ír ki a clamp miatt de először is a readyben változik a Health, lefut a setter meghívja a signalt és kiírja az új életerőt
+
+gettereket gyakran arra használják, hogy értékeket alakítsanak át
+példa:
+var chance := 0.2
+var chance_percent: int:
+	get: 
+		return chance * 100
+
+func _ready():
+	print(chance_percent)
+	chance = 0.6
+	print(chance_percent)
+
+így pl nem kell trükközni 
+var chance := 0.2
+var chance_percent: int:
+	get: 
+		return chance * 100
+	set(value):
+		chance = float(value) / 100.0
+
+func _ready():
+	print(chance_percent)
+	chance_percent = 40
+	print(chance_percent)
+
+CLASSES
+A gd script egy objektum orientált nyelv, ez azt jelenti, hogy általában a kódunkat objektumokba tesszük amik egymással interaktálnak, ezt főképp osztályok használatával érhetjük el
+
+a classra bluepintként gondoljunk, 
+például egy rpg-t csinálunk egy rakás karakterrel amivel a játékos interaktálni tud
+szóval csinálunk egy Character osztályt aminek vannak változói és olyan logikája ami minden Characternek a játékunkban lennie kell
+pl
+name, Health, dialogue hogy interaktálni lehessen velük
+logika lehet pl talk(), die()
+aztán fogjuk ezt az osztályt és előfordulásokat (instances) készítünk 
+ezek az osztályunk specifikus változatai
+készíthetünk pl olyan instancet, hogy potion seller, 50 életerővel, és olyan dialogue-val, hogy you can't handle my strongest potions!
+és egy rakás másikat amiknek ugyan azok a változóik vannak de különböző értékekkel
+tudnak beszélni, és meghalni
+ez az osztályok alapelve
+
+godotban már eddig is belefutottunk egy rakás osztályba, mivel minden beépített node egy class, 
+minden node önálló objektum, egy rakás változóval és különböző logikával melyekből instanceket készíthetünk, 
+mikor egy sprite nodeot használunk egy sprite osztályt példányosítunk, szóval mikor scriptet készítünk valójában olyan mint ha azt tennénk de NEM
+
+készítésük egyszerű
+új node, script nyitás
+class_name Character
+ezt beírjuk a felső sorba
+
+class_name Character
+
+extends Node
+
+@export var profession : String
+@export var health : int
+
+így most a karakterünk kapott 2 tulajdonságot
+ctrl + d-vel duplikálni tudom az instanceket ha ki vannak jelölve
+
+3 instance készült mindegyik különböz értékekel
+
+class_name Character
+
+extends Node
+
+@export var profession : String
+@export var health : int
+
+func die():
+	health = 0
+	print(profession + " died")
+
+ez a karakter osztály de jelenleg most semmi nem hívja meg ezt a függvényt
+drag and droppal is behívhatjuk egy másik fájlba, de mivel elneveztük 
+használhatunk @export változót is ehelyett, így a connectiont az editorban állíthatjuk és nem kell aggódnunk amiatt, hogy az útvonal változna
+
+main.gd
+extends Node
+
+@export var character_to_kill: Character
+
+func _ready():
+	character_to_kill.die()
+
+trükkösebb mint a c# picit fura, de van értelme
+
+mivel ugye másoltam a charactereket miután létrehoztam egy scriptet nekik ugyan azzal dolgoznak ez fogja össze
+
+Inner classes
+ezek olyan osztályok melyek egy más osztályban léteznek
+jellemzően arra használod őket, hogy változókat egységesíts és 1-2 funkciójuk is legyen
+
+a dictionaryk egy jó opciója lehet
+
+character.gd
+
+class_name Character
+
+extends Node
+
+var chest = Equipment.new()
+
+class Equipment:
+	var armor := 10
+	var weight := 5
+.new() ez készít új példányt az osztályból
+
+class_name Character
+
+extends Node
+
+var chest := Equipment.new()
+var legs := Equipment.new()
+
+func _ready() -> void:
+	chest.armor = 20
+	print(chest.armor)
+	print(legs.weight)
+
+class Equipment:
+	var armor := 10
+	var weight := 5
+néha picit biztosabb lehet a dictionarynél mert a gdscript felismeri a propertyket, kevesebb elgépelés
+typesafe
+
+ÖRÖKLŐDÉS
+mostmár tudjuk, hogy godotban minden node class, és tudunk sajátot csinálni ha scripteket használunk
+de van még egy fontos dolog amit tudnunk kell és így van a godot strukturálva ez az inheritance
+
+az inheritance lehetővé teszi, hogy egy osztályt egy másikből származtassunk
+már csináltunk ilyet
+
+a scriptjeink eleje extends Node
+szóval a scriptünk a Node classból származik
+
+ez azt jelenti, hogy minden funkció, változó ami a node classban van az a scriptünkben is elérhető
+a godot ezt egész jól vizualizálja, ha új nodera nyomunk a nodeokat látom de némelyik másik node alatt van a kijelzőn, ez azért van mert azok a nodeok amik bent vannak a felsőkből származnak
+
+ezen a listán a character osztályunk is rajta van, mivel mikor új osztályt készítünk egy új node typeot hozunk létre, és a Node-ból származik
+
+absztraktnak hangzik mert az is, de ami a lényeg, hogy a lehtöbb esetben figyeljünk arra, hogy amiből jó származik amivel dolgozunk
+
+pl ha csinálunk egy scriptet ami mozgatja a játékosunkat csinálunk egy characterbody2D nodeot, és scriptet adunk ehhez a nodehoz, ez alapértelmezetten a characterbody2d-t extendeli vagyis mindenhez hozzáférünk ami ebben van
+pl a velocityhez és move_and_slide() funkcióhoz ami a nodeunkat mozgatja majd
+
+
+composition
+még ha a godot öröklődést is használ a nodejaihoz gyakran van jobb megoldás is arra, hogy strukturáld a kódod, a godot jól illeszkedik egy másik módra is amit compositionnek hívunk
+
+adott a következő scenárió
+Player:
+	attack
+	Health
+	hitbox
+	user input
+Enemy:
+	attack
+	Health
+	hitbox
+	AI stuff
+
+Az öröklődés világában fognánk és az attack, Health, hitbox tulajdonságokat egy külön osztályba helyeznénk a player és enemy pedig ebből az osztályból származna, szóval ha módosítanunk kell a playernél és enemynél is látszódna vagyis hatással lenne rájuk
+
+
+
+
+
+call down signal up
+godotban sok dolog van amire figyelnek a fejlesztők de van egy kiemelkedően fontos ökölszabály mikor nodeok között kommunikálunk ez a call down signal up módszer
+
+minden godot scene egy node fa, az elején a root van ami a hierarchia teteje,
+mikor egy node közvetlen a másik alatt van parent child relationshipben vannak, fent a szülő alül a gyerek
+a childnak is lehet childja és így tovább
+a lényege ennek a dolognak, hogy a nodeok amik alul vannak hívhatnak függvényeket de ez visszafelé nem szép, ehelyett az alsó nodeok signalokat használnak, hogy jelezzék ha történt valami
+
+a felső nodeok így kapcsolódhatnak ehhez a signalhoz és megfelelően cselekedhetnek, 
+a való életben is a szülők megmondhatják a gyereknek mit csináljanak, de a gyerek nem nagyn teszi ezt visszafelé, ehelyett a gyerek jelzi mi kéne neki és a szülő eldönti mi legyen
+
+de mi van ha 2 node ugyan azon a szinten van?
+
+ezeket siblingeknek hívjuk
+ilyenkor a szülő elem felel azért hogy a signalt eljutassa a mássik egy funkciójának
+ez jellemzően a _ready() ben történik minden elején
+
+ez az elv lényege de ezt gyakorolni kell, hogy megfelelően alkalmazd
+
+STYLE
+a gdscript oldalán vannak elnevezési konvenciók stb hogy a kódunk elegáns legyen
+
+classok PascalCase írásmód
+változók snake_case
+constansok ALL_CAPS
+
+velocity sebesség melynek iránya is van
+f6 run current scene
+
+rigidbody2d-t nem tudjuk direktben kontrollálni, muszáj gravity, impulse ilyenek
+ai mozgáshoz tök jók
+gravity 1 lezuhannak a képernyőről
+gravity0 nem zuhannak le 
+
+var mob_types = Array($AnimatedSprite2D.sprite_frames.get_animation_names())
+így hozzáférek ha több animációm van
+
+$AnimatedSprite2D.animation = mob_types.pick_random() kiszed egy random elemet egy tömbből
+marker2d indikáljuk a játékos start helyzetét
+ha azt akarjuk, hogy valami megadott útvonalon mozogjon path2d node
+pontokat tudok kijelölni és ezel között útvonalakat létrehozni
+Draw the path in clockwise order, or your mobs will spawn pointing outwards instead of inwards!
+
+miután kijelöltük a pontjainkat CloseCurve opció
+
+pathfollow2d 
+ez a node automatikusan forogni fog és követi az utat mozgás közben, szóval felhasznákhatjuk egy véletlenszerű pozíció és irány kiválasztására az útvonal mentén
+
+packedscene eszköz, hogy többet csináljunk ugyan abból a dologból pl mobok
+behúzhatjuk propertyként bármely scenet ha használjuk az oldalsó bárba így a scriptünk hozzáfér a dolgaihoz 
+
+add_child() ezzel tudok instancet kapcsolni egy scenehez egy másik sceneből
+
+canvaslayer egy node ami engedi, hogy dolgokat rajzoljunk a játékunk fölé
+szóval az információ amit megjelenítünk nem sérül player vagy mobok által
+
+anchors: nodeoknak van helye és mérete, de anchorjaik is vannak, ezek definiáljál a kezdő pozíciót, 
+ez referencia a kiinduló node széleire
+
+más node signaékait hozzá tudom csatolni már meglévő függvényekhez a main-ben
+kiválasztás a kis ablakban és ott fognak sorakozni a függvények
+
+
+ha több dolgot akarunk kitörölni egyszerre pl új játéknál az adott sceneben amiből törölni akarunk, roote node groups tab a signalok mellett, új Group nevet adunk neki
+
+get_tree().call_group("mobs", "queue_free")
+majd ezzel a sorral csoportosan törölni tudjuk őket
+
+a callgroup minden instanere meghívja a queue__free functiont vagyis minden mob törli magát
+
+ColorRect node színezhető téglalap, ha minden elé tesszük minden mögött lesz
+háttérnek jó, 
+TextureRect pedig jó háttérképnek
+
+button shortcut tulajdonságánál tudok megadni shortcut eventet pl ha a gomb funkcióját egy gombra akarom kötni csinálok egy Actiont az Actiont hozzá tudom kötni a gombhoz is tehát ami a clikkre történik az enterre kattintva is történik
