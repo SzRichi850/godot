@@ -32,7 +32,7 @@ Miután létrehoztuk a CharacterBody2D Node-ot, a jobb oldali **Inspector** pane
 
 Minden Node rendelkezik saját Property-kkel, amelyeket itt érhetünk el.
 
-Ezek segítségével testre szabhatjuk a működésüket anélkül, hogy egyetlen sor kódot írnánk. :contentReference[oaicite:1]{index=1}
+Ezek segítségével testre szabhatjuk a működésüket anélkül, hogy egyetlen sor kódot írnánk.
 
 ---
 
@@ -46,7 +46,7 @@ Adjuk hozzá a Player gyermekeként.
 
 Ez fogja megjeleníteni a karakter animációit.
 
-A Sprite Frames tulajdonságnál válasszuk ki a karakterhez tartozó sprite sheetet vagy animációs képkockákat. :contentReference[oaicite:2]{index=2}
+A Sprite Frames tulajdonságnál válasszuk ki a karakterhez tartozó sprite sheetet vagy animációs képkockákat.
 
 ---
 
@@ -56,7 +56,7 @@ Természetesen minden képkockát elkészíthetnénk saját magunk is.
 
 A legtöbb esetben azonban sokkal egyszerűbb előre elkészített asseteket használni.
 
-Így nem kell minden animációs képkockát külön megrajzolni, és később is könnyebb módosítani vagy cserélni őket. :contentReference[oaicite:3]{index=3}
+Így nem kell minden animációs képkockát külön megrajzolni, és később is könnyebb módosítani vagy cserélni őket.
 
 ---
 
@@ -77,7 +77,7 @@ Project
 → Nearest
 ```
 
-Így a pixelek élesek maradnak, és a grafika jobban illeszkedik a Pixel Art stílushoz. :contentReference[oaicite:4]{index=4}
+Így a pixelek élesek maradnak, és a grafika jobban illeszkedik a Pixel Art stílushoz.
 
 ---
 
@@ -87,7 +87,7 @@ A CharacterBody2D csak akkor tud együttműködni a Godot fizikai rendszerével,
 
 Ha ezt nem adjuk hozzá, a Godot figyelmeztetést fog megjeleníteni.
 
-A CollisionShape2D határozza meg, hogy a karakter fizikailag mekkora területet foglal el a világban. :contentReference[oaicite:5]{index=5}
+A CollisionShape2D határozza meg, hogy a karakter fizikailag mekkora területet foglal el a világban.
 
 ---
 
@@ -97,7 +97,7 @@ A Collision Shape nem feltétlenül kell, hogy pontosan kövesse a karakter graf
 
 Sőt, sok esetben érdemes egy kicsit kisebbre készíteni.
 
-Ha túl nagy, játék közben zavaró lehet, mert a játékos úgy érezheti, hogy olyan dolgoknak is nekimegy, amelyekhez valójában még nem ért hozzá. :contentReference[oaicite:6]{index=6}
+Ha túl nagy, játék közben zavaró lehet, mert a játékos úgy érezheti, hogy olyan dolgoknak is nekimegy, amelyekhez valójában még nem ért hozzá.
 
 ---
 
@@ -111,7 +111,7 @@ Adjunk a Player Node gyermekeként egy **Camera2D** Node-ot.
 
 Ez fogja meghatározni, hogy a játékos a világból mit lát.
 
-Az **F** billentyű megnyomásával megjeleníthetjük a kamera nézetét a szerkesztőben. :contentReference[oaicite:7]{index=7}
+Az **F** billentyű megnyomásával megjeleníthetjük a kamera nézetét a szerkesztőben.
 
 ---
 
@@ -127,7 +127,7 @@ Például:
 Zoom = (4, 4)
 ```
 
-Így sokkal nagyobb részt láthatunk a pályából. :contentReference[oaicite:8]{index=8}
+Így sokkal nagyobb részt láthatunk a pályából.
 
 ---
 
@@ -141,7 +141,7 @@ A Godot felajánl egy beépített CharacterBody2D movement scriptet.
 
 Egyelőre ezt fogjuk használni.
 
-Később természetesen saját mozgásrendszert is készíthetünk, de kezdésnek ez tökéletes alapot ad. :contentReference[oaicite:9]{index=9}
+Később természetesen saját mozgásrendszert is készíthetünk, de kezdésnek ez tökéletes alapot ad.
 
 ---
 
@@ -151,7 +151,7 @@ Ha most elindítjuk a játékot, a karakter azonnal leesik a képernyőről.
 
 Ennek egyszerű oka van.
 
-A Player már rendelkezik CollisionShape2D-vel, de jelenleg nincs semmi a világban, amin fizikailag meg tudna állni. :contentReference[oaicite:10]{index=10}
+A Player már rendelkezik CollisionShape2D-vel, de jelenleg nincs semmi a világban, amin fizikailag meg tudna állni.
 
 ---
 
@@ -163,8 +163,7 @@ Ehhez hozzunk létre egy **StaticBody2D** Node-ot, majd adjunk hozzá egy megfel
 
 A jegyzetben erre a célra a **WorldBoundaryShape2D** szerepel, amely gyors megoldást ad a világ határának kialakítására.
 
-Ha elforgatjuk, függőleges irányban is használható. :contentReference[oaicite:11]{index=11}
-
+Ha elforgatjuk, függőleges irányban is használható.
 ---
 
 # Miért StaticBody2D?
@@ -178,7 +177,7 @@ Például:
 - sziklák;
 - épületek.
 
-A Player fizikája ezekkel fog kölcsönhatásba lépni. :contentReference[oaicite:12]{index=12}
+A Player fizikája ezekkel fog kölcsönhatásba lépni.
 
 ---
 
@@ -191,7 +190,7 @@ Alapértelmezetten:
 - a nyílbillentyűkkel mozoghatunk;
 - a Space billentyűvel ugorhatunk.
 
-Ezt a rendszert később a saját igényeink szerint fogjuk módosítani. :contentReference[oaicite:13]{index=13}
+Ezt a rendszert később a saját igényeink szerint fogjuk módosítani.
 
 ---
 
@@ -201,7 +200,7 @@ Az ideiglenes talaj csak arra szolgált, hogy kipróbáljuk a karakter mozgásá
 
 A következő fejezetben valódi világot fogunk építeni TileMap segítségével.
 
-Ezért az ideiglenes talajt később eltávolítjuk. :contentReference[oaicite:14]{index=14}
+Ezért az ideiglenes talajt később eltávolítjuk.
 
 ---
 
