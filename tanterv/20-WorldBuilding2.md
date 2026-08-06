@@ -68,7 +68,7 @@ Ezek többnyire nem befolyásolják a játékmenetet, viszont sokkal természete
 
 ---
 
-# Layerök szerepe
+# Layerek szerepe
 
 Korábban már létrehoztunk külön Layereket.
 
